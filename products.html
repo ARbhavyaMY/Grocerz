@@ -1,0 +1,58 @@
+<!-- templates/products.html -->
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Grocerz - Products</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Grocerz</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/products">Products</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Products</h2>
+
+        <form method="get" action="/products" style="margin-bottom:16px;">
+            <input type="text" name="q" placeholder="Search name or SKU" value="{{ q }}">
+            <input type="text" name="brand" placeholder="Filter brand" value="{{ brand }}">
+            <button type="submit">Search</button>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Name</th>
+                    <th>Brand</th>
+                    <th>Size</th>
+                    <th>Price</th>
+                    <th>Availability</th>
+                    <th>Aisle</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in products %}
+                <tr>
+                    <td>{{ p.sku }}</td>
+                    <td>{{ p.name }}</td>
+                    <td>{{ p.brand }}</td>
+                    <td>{{ p.size }}</td>
+                    <td>₹{{ '%.2f'|format(p.price) }}</td>
+                    <td>{{ p.availability }}</td>
+                    <td>{{ p.aisle }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+
+</html>
