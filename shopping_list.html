@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Your Shopping List</h2>
+
+{% if not items %}
+<p>Your shopping list is empty.</p>
+<p><a class="btn" href="{{ url_for('products') }}">Browse Products</a></p>
+{% else %}
+<form action="{{ url_for('update_shopping_list') }}" method="post">
+    <table>
+        <thead>
+            <tr>
+                <th>SKU</th>
+                <th>Name</th>
+                <th>Qty</th>
+                <th>Aisle</th>
+                <th>Map</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for it in items %}
+            <tr>
+                <td>{{ it.sku }}</td>
+                <td>{{ it.name }}</td>
+                <td>
+                    <input type="number" name="qty-{{ it.sku }}" value="{{ it.qty }}" min="1"
+                        style="width:72px; padding:6px;">
+                </td>
+                <td>{{ it.aisle }}</td>
+                <td>
+                    {% if it.aisle %}
+                    <a href="{{ url_for('store_map') }}?highlight={{ it.aisle | urlencode }}">Show on map</a>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td>
+                    <form action="{{ url_for('remove_from_list') }}" method="post" style="display:inline;">
+                        <input type="hidden" name="sku" value="{{ it.sku }}">
+                        <button class="btn" type="submit">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div style="margin-top:12px; display:flex; gap:12px; align-items:center;">
+        <button class="btn" type="submit">Update quantities</button>
+
+        <form action="{{ url_for('clear_list') }}" method="post" style="display:inline;">
+            <button class="btn" type="submit">Clear list</button>
+        </form>
+
+        <a class="btn" href="{{ url_for('products') }}">Continue shopping</a>
+    </div>
+</form>
+{% endif %}
+{% endblock %}
