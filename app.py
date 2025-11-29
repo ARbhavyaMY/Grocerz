@@ -1,10 +1,13 @@
-# app.py - Simple Grocerz (beginner-friendly)
+# app.py -  Grocerz 
 # Requirements: flask, pandas, openpyxl
 # Run: activate your venv, then `python app.py`
 
 from flask import Flask, render_template, request, redirect, url_for, flash
 import pandas as pd
 import os
+import qrcode
+from io import BytesIO
+from flask import send_file
 
 app = Flask(__name__)
 app.secret_key = "dev-secret"  # ok for local dev
@@ -63,7 +66,27 @@ def index():
     """
 
 
+@app.route("/product/<sku>")
+def product_detail(sku):
+    df = load_products()
+    product = df[df["sku"].str.lower() == sku.lower()].to_dict(orient="records")
+    if not product:
+        return "Product not found", 404
+    product = product[0]
+    return render_template("product_detail.html", product=product)
+
+
+@app.route("/qr/<sku>")
+def qr_code(sku):
+    qr_img = qrcode.make(f"http://localhost:5000/product/{sku}")
+    buffer = BytesIO()
+    qr_img.save(buffer, format="PNG")
+    buffer.seek(0)
+    return send_file(buffer, mimetype="image/png")
+
+
 @app.route("/products")
+
 def products():
     # get query parameters
     q = request.args.get("q", "").strip().lower()
@@ -107,3 +130,4 @@ if __name__ == "__main__":
     # helpful message and start server
     print("Running Grocerz (simple) at http://127.0.0.1:5000")
     app.run(debug=True)
+
