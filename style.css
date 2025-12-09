@@ -1,48 +1,195 @@
-/* static/css/style.css - simple beginner-friendly styles */
-body {
-    font-family: Arial, sans-serif;
-    margin: 18px;
-    background: #fafafa;
-    color: #111;
+/* style.css - Grocerz theme (olive green + white) */
+
+/* --- Variables --- */
+:root{
+  --olive-900: #2f5a28;
+  --olive-800: #3d6e35;
+  --olive-700: #4a8342;
+  --olive-600: #63a04f;
+  --olive-500: #79b86a;
+  --muted: #f4f7f2;
+  --accent: #9fd08b;
+  --text: #15381a;
+  --soft: rgba(0,0,0,0.06);
+  --card-shadow: 0 6px 18px rgba(18,30,18,0.08);
+  --radius: 12px;
+  --max-width: 1100px;
 }
 
-header {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    margin-bottom: 16px;
+/* --- Base --- */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  margin:0;
+  background: linear-gradient(180deg,var(--muted), #ffffff 40%);
+  color: var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.45;
 }
 
-nav a {
-    margin-right: 10px;
-    text-decoration: none;
-    color: #444;
+/* --- Container --- */
+.container{
+  width: 92%;
+  max-width: var(--max-width);
+  margin: 28px auto;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 12px;
-    background: #fff;
+/* --- Header / Nav --- */
+.site-header{
+  background: white;
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow: var(--card-shadow);
+  display:flex;
+  align-items:center;
+  gap:18px;
 }
 
-th,
-td {
-    border: 1px solid #e6e6e6;
-    padding: 8px 10px;
-    text-align: left;
+/* logo area */
+.logo {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-decoration:none;
+  color:var(--olive-900);
+}
+.logo svg{width:46px;height:46px;flex-shrink:0}
+.logo h1{font-size:20px;margin:0;font-weight:700;letter-spacing:0.2px}
+.logo p{margin:0;font-size:12px;color:#6a7b66}
+
+/* nav */
+.nav{
+  margin-left:auto;
+  display:flex;
+  gap:18px;
+  align-items:center;
+}
+.nav a{
+  color:var(--olive-800);
+  text-decoration:none;
+  padding:8px 12px;
+  border-radius:8px;
+  font-weight:600;
+  transition:all .18s ease;
+}
+.nav a:hover{background:var(--muted); transform:translateY(-1px)}
+
+/* coins / badge */
+.header-extra{display:flex;gap:12px;align-items:center}
+.badge{
+  background:var(--olive-600);
+  color:white;
+  padding:6px 10px;border-radius:999px;font-weight:700;font-size:0.95rem;
+  box-shadow:0 4px 10px rgba(99,160,79,0.14);
 }
 
-th {
-    background: #f5f5f5;
-    font-weight: 700;
+/* --- Hero (home) --- */
+.hero{
+  display:grid;
+  grid-template-columns: 1fr 420px;
+  gap:24px;
+  margin-top:22px;
+  align-items:center;
+}
+.hero-card{
+  background: linear-gradient(180deg, rgba(121,184,106,0.08), rgba(121,184,106,0.02));
+  border-radius:20px;
+  padding:30px;
+  box-shadow:var(--card-shadow);
+}
+.hero-title{
+  font-size:36px;color:var(--olive-900);margin:0 0 8px 0;font-weight:800;
+}
+.hero-sub{font-size:16px;color:#567044;margin:0 0 18px}
+.hero-ctas{display:flex;gap:12px;margin-top:10px}
+.btn{
+  display:inline-block;padding:10px 16px;border-radius:10px;text-decoration:none;font-weight:700;
+  border:none;cursor:pointer;
+}
+.btn-primary{
+  background:var(--olive-800);color:#fff;
+  box-shadow:0 8px 18px rgba(47,90,40,0.12);
+}
+.btn-outline{
+  background:transparent;color:var(--olive-800);border:2px solid rgba(61,110,53,0.08);
 }
 
-input {
-    padding: 6px 8px;
-    margin-right: 6px;
+/* hero image box (leaf bowl style) */
+.hero-art{
+  background:linear-gradient(135deg, rgba(121,184,106,0.12), #fff);
+  border-radius:18px;padding:18px;text-align:center;
+  height:100%; display:flex; align-items:center; justify-content:center;
 }
 
-button {
-    padding: 6px 10px;
+/* --- Page headings --- */
+.page-title{font-size:24px;margin:20px 0 12px 0;color:var(--olive-900);font-weight:800}
+
+/* --- Search / Controls --- */
+.controls{display:flex;gap:12px;align-items:center;margin-bottom:14px}
+.search, .filter {
+  padding:10px 12px;border-radius:10px;border:1px solid #e5e9e4;background:#fff;
+  min-width:220px;
+}
+.search::placeholder{color:#9aa99a}
+
+/* --- Products table (desktop) --- */
+.table-wrap{background:#fff;border-radius:12px;box-shadow:var(--card-shadow);overflow:hidden}
+.products-table{width:100%;border-collapse:collapse}
+.products-table th, .products-table td{padding:16px;border-bottom:1px solid #f1f3ef}
+.products-table th{
+  text-align:left;background:#fbfdfb;color:var(--olive-800);font-weight:700;font-size:14px
+}
+.products-table tr:last-child td{border-bottom:none}
+.products-table td small{display:block;color:#7a8b73;font-size:13px}
+
+/* add-to-list */
+.qty{width:64px;padding:8px;border-radius:6px;border:1px solid #e5e9e4}
+.add-btn{padding:8px 12px;border-radius:8px;border:none;background:var(--olive-700);color:#fff;font-weight:700}
+
+/* availability badges */
+.badge-available{color:var(--olive-900);font-weight:700}
+.badge-out{color:#c24444;font-weight:700}
+
+/* --- Cards layout for mobile --- */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:10px}
+.product-card{
+  background:#fff;border-radius:12px;padding:14px;box-shadow:var(--card-shadow);
+  display:flex;flex-direction:column;gap:8px;
+}
+
+/* --- Shopping list page --- */
+.list-wrap{display:flex;gap:20px;align-items:flex-start}
+.list-box{flex:1;background:#fff;padding:16px;border-radius:12px;box-shadow:var(--card-shadow)}
+.summary{width:320px;background:linear-gradient(180deg,#fff,#f7fff7);padding:16px;border-radius:12px;box-shadow:var(--card-shadow)}
+
+/* --- Map page (simple grid) --- */
+.map-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+  background:linear-gradient(180deg,#fcfff9,#fff);padding:14px;border-radius:12px;box-shadow:var(--card-shadow);
+}
+.aisle{
+  padding:18px;border-radius:8px;background:#f9fff8;border:1px solid #e9f3ea;text-align:center;font-weight:700;color:var(--olive-800);
+}
+.aisle.highlight{background:linear-gradient(180deg,var(--accent),#fff);box-shadow:0 8px 18px rgba(121,184,106,0.08);transform:scale(1.02)}
+
+/* --- QR page --- */
+.qr-box{
+  display:flex;gap:20px;align-items:center;background:#fff;padding:18px;border-radius:12px;box-shadow:var(--card-shadow)
+}
+.qr-box img{width:220px;height:220px;border-radius:10px;object-fit:contain}
+.qr-info{max-width:560px}
+
+/* --- Footer --- */
+.site-footer{margin-top:40px;text-align:center;color:#6b7c66;font-size:14px;padding:20px}
+
+/* --- Responsive --- */
+@media (max-width:880px){
+  .hero{grid-template-columns:1fr; padding-bottom:6px}
+  .nav{display:none}
+  .search{width:100%}
+  .products-table{display:none} /* hide big table on mobile; show cards */
+  .card-grid{display:grid}
+  .container{width:94%}
 }
