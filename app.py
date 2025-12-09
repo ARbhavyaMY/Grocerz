@@ -78,12 +78,9 @@ def generate_qr(link: str) -> BytesIO:
 
 @app.route("/")
 def index():
-    return """
-    <h2>Grocerz </h2>
-    <p>Open <a href="/products">/products</a> to view items.</p>
-    <p>Shopping list: <a href="/shopping-list">/shopping-list</a></p>
-    <p>Map: <a href="/map">/map</a></p>
-    """
+    # renders templates/index.html which extends base.html and loads style.css
+    # pass any dynamic values you need (e.g. coins)
+    return render_template("index.html", coins=session.get("coins", 0))
 
 
 @app.route("/products")
@@ -266,4 +263,3 @@ def upload():
 if __name__ == "__main__":
     print("Running Grocerz at http://127.0.0.1:5000")
     app.run(debug=True)
-
