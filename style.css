@@ -210,3 +210,40 @@ body{
 .site-header h1 {
     margin: 0;
 }
+[MAP EDITED CHANGES]
+.store-map-wrapper {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.store-blueprint {
+  max-width: 900px;
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+}
+
+/* If not already styled */
+.map-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.aisle {
+  padding: 0.75rem;
+  text-align: center;
+  border-radius: 10px;
+  background: #f3f7f0;
+  font-size: 0.95rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.aisle.highlight {
+  border: 2px solid #2f7a35;
+  background: #e7f7e7;
+  font-weight: 600;
+  box-shadow: 0 0 12px rgba(47,122,53,0.25);
+}
+
