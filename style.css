@@ -193,3 +193,20 @@ body{
   .card-grid{display:grid}
   .container{width:94%}
 }
+
+
+.logo-img {
+    height: 80px;      /* reduce this number if still too big */
+    width: auto;       /* keeps proportions */
+    object-fit: contain;
+    display: block;
+}
+.site-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;    /* reduce space between logo and title */
+}
+
+.site-header h1 {
+    margin: 0;
+}
