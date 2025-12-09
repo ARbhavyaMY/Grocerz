@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero" style="margin-top:18px">
+  <div class="hero-card">
+    <h2 class="hero-title">Grocerz — Smart Inventory Manager</h2>
+    <p class="hero-sub">Find items faster. Save time. Shop smarter with aisle mapping and a handy shopping list.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="{{ url_for('products') }}">Browse Products</a>
+      <a class="btn btn-outline" href="{{ url_for('shopping_list') }}">My Shopping List</a>
+    </div>
+  </div>
+
+  <div class="hero-art">
+    <img src="{{ url_for('static', filename='img/greens.jpg') }}" alt="greens" style="width:86%;border-radius:12px">
+  </div>
+</section>
+{% endblock %}
