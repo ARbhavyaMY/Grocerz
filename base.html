@@ -74,6 +74,8 @@
             <a href="{{ url_for('shopping_list') }}">Shopping List{% set sl = session.get('shopping_list', {}) %}{% if
                 sl and sl|length > 0 %} ({{ sl|length }}){% endif %}</a>
             <a href="{{ url_for('store_map') }}">Map</a>
+            <a href="{{ url_for('show_qr') }}">Show QR</a>
+
         </nav>
         <div style="margin-left:auto; font-weight:600;">Coins: {{ session.get('coins', 0) }}</div>
     </header>
