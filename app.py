@@ -1,21 +1,20 @@
-# app.py - Grocerz (simple + shopping list + map)
-# Requirements: flask, pandas, openpyxl
-# Run: activate your venv, then `python app.py`
+
 
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import pandas as pd
 import os
+import qrcode
+from io import BytesIO
+from flask import send_file
+
 
 app = Flask(__name__)
 app.secret_key = "dev-secret"  # OK for local testing only
 
-# Path to Excel inventory (put inventory.xlsx inside data/ folder)
+# Path to Excel inventory
 DATA_PATH = os.path.join("data", "inventory.xlsx")
 
 
-# ----------------------
-# DATA LOAD / HELPERS
-# ----------------------
 def load_products():
     """
     Read Excel into a pandas DataFrame and return it.
@@ -61,9 +60,22 @@ def get_shopping_list():
     return session["shopping_list"]
 
 
-# ----------------------
+def generate_qr(link: str) -> BytesIO:
+    """
+    Create a PNG QR image for `link` and return a BytesIO buffer ready to send.
+    """
+    qr = qrcode.QRCode(box_size=6, border=2)
+    qr.add_data(link)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    buf = BytesIO()
+    img.save(buf, format="PNG")
+    buf.seek(0)
+    return buf
+
+
 # ROUTES
-# ----------------------
+
 @app.route("/")
 def index():
     return """
@@ -101,9 +113,8 @@ def products():
     return render_template("products.html", products=products, q=q, brand=brand_q)
 
 
-# ----------------------
 # Add to shopping list
-# ----------------------
+
 @app.route("/add_to_list", methods=["POST"])
 def add_to_list():
     sku = request.form.get("sku", "").strip()
@@ -115,7 +126,6 @@ def add_to_list():
     if qty < 1:
         qty = 1
 
-    # validate sku exists in inventory
     df = load_products()
     if df[df["sku"] == sku].empty:
         flash("Product not found.")
@@ -128,9 +138,7 @@ def add_to_list():
     return redirect(url_for("products"))
 
 
-# ----------------------
-# Shopping list view / update / remove / clear
-# ----------------------
+# Shopping list
 @app.route("/shopping-list")
 def shopping_list():
     cart = get_shopping_list()
@@ -156,7 +164,7 @@ def shopping_list():
 
 @app.route("/update_shopping_list", methods=["POST"])
 def update_shopping_list():
-    # ensure session key exists
+
     session.setdefault("shopping_list", {})
 
     updated = {}
@@ -193,9 +201,7 @@ def clear_list():
     return redirect(url_for("shopping_list"))
 
 
-# ----------------------
 # Simple store map
-# ----------------------
 @app.route("/map")
 def store_map():
     """
@@ -203,16 +209,45 @@ def store_map():
     Change the aisles list below to match your Excel aisle names.
     """
     highlight = request.args.get("highlight", "")
-    # sample aisles - update to match your inventory exactly (e.g. "Aisle 3", "Freezer", "Produce")
+
     aisles = ["Aisle 1", "Aisle 2", "Aisle 3", "Aisle 4", "Aisle 5",
               "Aisle 6", "Aisle 7", "Aisle 8", "Aisle 9", "Aisle 10",
               "Freezer", "Produce"]
     return render_template("map.html", aisles=aisles, highlight=highlight)
 
+# qr
+
+
+@app.route("/qr")
+def qr():
+    """
+    Return PNG image for a QR. Pass ?link=<url> to create a QR for any URL.
+    If no link given, defaults to site root.
+    Example: /qr?link=https%3A%2F%2Fexample.com
+    """
+    link = request.args.get("link")
+    if not link:
+        # default to app root (use request.host_url to build absolute URL)
+        link = request.host_url.rstrip("/")  # e.g. http://127.0.0.1:5000
+    buf = generate_qr(link)
+    return send_file(buf, mimetype="image/png")
+
+
+@app.route("/show-qr")
+def show_qr():
+    """
+    Simple page that shows the QR (image is served by /qr).
+    Accepts optional ?link= argument to set different links.
+    """
+    link = request.args.get("link", request.host_url.rstrip("/"))
+    # Pass the link to the template so the <img> src can include it
+    return render_template("qr_page.html", link=link)
 
 # ----------------------
 # Admin: upload Excel (optional)
 # ----------------------
+
+
 @app.route("/admin/upload", methods=["POST"])
 def upload():
     file = request.files.get("excel")
