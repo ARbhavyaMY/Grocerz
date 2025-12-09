@@ -1,106 +1,82 @@
-<!doctype html>
-<html>
+{% extends "base.html" %}
+{% block content %}
+<div class="container" style="margin-top:18px">
+  <h2 class="page-title">Products</h2>
 
-<head>
-    <meta charset="utf-8">
-    <title>Grocerz - Products</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <style>
-        /* small inline styles to ensure buttons look OK if you don't have style.css */
-        table {
-            border-collapse: collapse;
-            margin-top: 12px;
-        }
+  <div class="controls">
+    <input class="search" type="text" name="q" placeholder="search" value="{{ q|default('') }}">
+    <input class="filter" type="text" name="brand" placeholder="brand" value="{{ brand|default('') }}">
+    <a class="btn btn-outline" href="{{ url_for('products') }}">Search</a>
+    <div style="margin-left:auto">
+      <a class="btn btn-primary" href="{{ url_for('show_qr') }}">Show QR</a>
+    </div>
+  </div>
 
-        th,
-        td {
-            border: 1px solid #bbb;
-            padding: 8px 10px;
-            text-align: left;
-        }
+  <div class="table-wrap">
+    <table class="products-table">
+      <thead>
+        <tr>
+          <th>SKU</th><th>Name</th><th>Brand</th><th>Price</th><th>Stock</th><th>Aisle</th><th style="width:180px">Add to list</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in products %}
+        <tr>
+          <td>{{ p.sku }}</td>
+          <td><strong>{{ p.name }}</strong><small>{{ p.size }}</small></td>
+          <td>{{ p.brand }}</td>
+          <td>₹{{ '%.2f'|format(p.price) }}</td>
+          <td>
+            {% if p.availability == 'Out of stock' %}
+              <span class="badge-out">Out of stock</span>
+            {% else %}
+              <span class="badge-available">In stock</span>
+            {% endif %}
+          </td>
+          <td>{{ p.aisle }}</td>
+          <td>
+            <form method="post" action="{{ url_for('add_to_list') }}" style="display:flex;gap:8px;align-items:center">
+              <input type="hidden" name="sku" value="{{ p.sku }}">
+              <input class="qty" type="number" name="qty" value="1" min="1">
+              <button class="add-btn" type="submit">Add to list</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
-        input[type=number] {
-            width: 64px;
-            padding: 6px;
-        }
+  <!-- mobile cards -->
+  <div class="card-grid" style="margin-top:16px">
+    {% for p in products %}
+      <div class="product-card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-weight:800">{{ p.name }}</div>
+            <small style="color:#71886f">{{ p.brand }} • {{ p.size }}</small>
+          </div>
+          <div style="text-align:right;color:var(--olive-800);font-weight:800">₹{{ '%.2f'|format(p.price) }}</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+          <div>
+            {% if p.availability == 'Out of stock' %}
+              <span class="badge-out">Out of stock</span>
+            {% else %}
+              <span class="badge-available">In stock</span>
+            {% endif %}
+          </div>
+          <div>
+            <form method="post" action="{{ url_for('add_to_list') }}" style="display:flex;gap:8px">
+              <input type="hidden" name="sku" value="{{ p.sku }}">
+              <input class="qty" type="number" name="qty" value="1" min="1">
+              <button class="add-btn" type="submit">Add to list</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
 
-        button {
-            padding: 6px 10px;
-        }
-    </style>
-</head>
-
-<body>
-    <header style="display:flex; align-items:center; gap:18px;">
-        <h1>Grocerz</h1>
-        <nav>
-            <a href="/">Home</a> |
-            <a href="/products">Products</a> |
-            <a href="{{ url_for('shopping_list') }}">Shopping List</a> |
-            <a href="{{ url_for('store_map') }}">Map</a>
-        </nav>
-    </header>
-
-    <main>
-        <h2>Products</h2>
-
-        <form method="get" action="{{ url_for('products') }}" style="margin-bottom:12px;">
-            <input type="text" name="q" placeholder="search" value="{{ q }}">
-            <input type="text" name="brand" placeholder="brand" value="{{ brand }}">
-            <button type="submit">Search</button>
-        </form>
-
-       
-        <p>
-            <a class="btn" href="{{ url_for('show_qr') }}">Show site QR</a>
-            
-            </p>
-
-
-        <p>Found: {{ products|length }} products</p>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>SKU</th>
-                    <th>Name</th>
-                    <th>Brand</th>
-                    <th>Price</th>
-                    <th>Stock</th>
-                    <th>Aisle</th>
-                    <th>Add to list</th> <!-- NEW column -->
-                </tr>
-            </thead>
-            <tbody>
-                {% for p in products %}
-                <tr>
-                    <td>{{ p.sku }}</td>
-                    <td>{{ p.name }}</td>
-                    <td>{{ p.brand }}</td>
-                    <td>₹{{ '%.2f'|format(p.price) }}</td>
-                    <td>{{ p.availability }}</td>
-                    <td>{{ p.aisle }}</td>
-
-                    <!-- add-to-list form -->
-                    <td>
-                        {% if p.stock_qty and p.stock_qty > 0 %}
-                        <form action="{{ url_for('add_to_list') }}" method="post"
-                            style="display:flex; gap:6px; align-items:center;">
-                            <input type="hidden" name="sku" value="{{ p.sku }}">
-                            <input type="number" name="qty" value="1" min="1" max="{{ p.stock_qty }}">
-                            <button type="submit">Add to list</button>
-                        </form>
-                        {% else %}
-                        <span style="color:#c43b2a; font-weight:700;">Out of stock</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <p style="margin-top:16px;"><a href="{{ url_for('shopping_list') }}">Go to your Shopping List →</a></p>
-    </main>
-</body>
-
-</html>
+</div>
+{% endblock %}
