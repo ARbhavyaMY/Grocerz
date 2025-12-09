@@ -1,26 +1,15 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Grocerz — QR Code</title>
-  <link rel="stylesheet" href="/static/css/style.css">
-  <style>
-    body { font-family: Arial, sans-serif; padding:24px; }
-    .box { background: #fff; padding:18px; border-radius:8px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); max-width:720px; }
-    img { display:block; margin:16px 0; }
-    .small { color:#666; font-size:0.95rem; }
-  </style>
-</head>
-<body>
-  <div class="box">
-    <h2>Scan to open</h2>
-    <p class="small">Link: <a href="{{ link }}" target="_blank" rel="noopener">{{ link }}</a></p>
+{% extends "base.html" %}
+{% block content %}
+<div class="container" style="margin-top:18px">
+  <h2 class="page-title">QR Code</h2>
 
-    <!-- image served by /qr with the link param -->
+  <div class="qr-box">
     <img src="{{ url_for('qr') }}?link={{ link|urlencode }}" alt="QR code">
-
-    <p class="small">Scan this QR with your phone camera to open the site.</p>
-    <p><a href="{{ url_for('products') }}">Back to products</a></p>
+    <div class="qr-info">
+      <p style="margin:0 0 8px">Scan this QR with your phone to open Grocerz:</p>
+      <p style="word-break:break-all;color:#3f593f"><a href="{{ link }}" target="_blank">{{ link }}</a></p>
+      <p style="margin-top:10px;color:#6b7c66">You can also download the QR image by right-click → Save image as.</p>
+    </div>
   </div>
-</body>
-</html>
+</div>
+{% endblock %}
